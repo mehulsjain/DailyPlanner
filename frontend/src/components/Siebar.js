@@ -2,11 +2,15 @@ import React, {useState, useEffect, useContext} from 'react'
 import axios from 'axios'
 import SideElement from './SideElement'
 import { TodoContext } from '../App';
+import { useCookies } from 'react-cookie';
+
 
 export const Sidebar = () => {
 
     const [todoList, setTodoList] = useState(null)
     const {setTodoValue} = useContext(TodoContext);
+    // const [cookies, setCookie] = useCookies(['name']);
+
     let bool = true
 
     const fetchTodoData = async () => {
@@ -24,8 +28,9 @@ export const Sidebar = () => {
           try {
               await axios.post(`http://localhost:4001/createTodo`,
               {
-                "title":newTodoTitle,
-                "tasks":newTodoTask
+                "title": newTodoTitle,
+                "tasks": newTodoTask,
+                "userId": cookies.id
               })
               .then(() => alert('Task Created successfull'))
               .catch((err) => console.log(err))

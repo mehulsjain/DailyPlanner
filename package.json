@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "appwrite": "^10.2.0"
+    "appwrite": "^10.2.0",
+    "react-cookie": "^4.1.1"
   }
 }

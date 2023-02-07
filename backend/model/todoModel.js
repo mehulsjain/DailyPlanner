@@ -9,7 +9,14 @@ const TodoSchema = new mongoose.Schema({
     tasks: {
         type: [String],
         default: undefined
+    },
+    userId:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref:"user"
     }
+},
+{
+    timestamps: true
 })
 
 module.exports = mongoose.model("Todo", TodoSchema)

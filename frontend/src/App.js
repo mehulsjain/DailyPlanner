@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import Header from './components/Header';
 import Sidebar from './components/Siebar';
 import TodoDetail from './components/TodoDetail';
+import { CookiesProvider } from 'react-cookie';
 
 export const TodoContext = React.createContext({
   id: "",
@@ -21,6 +22,7 @@ const App = () => {
   const value = { todoValue, setTodoValue };
 
   return (
+    // <CookiesProvider>
     <TodoContext.Provider value={value}>
       <Header />
       <div className='flex flex-row w-full'>
@@ -30,6 +32,7 @@ const App = () => {
         
       </div>
     </TodoContext.Provider>
+    // </CookiesProvider>
   );
 }
 
