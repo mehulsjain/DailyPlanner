@@ -1,6 +1,6 @@
 import axios from "axios"
 import { useContext, useState, useEffect} from "react"
-import { TodoContext } from "../App"
+import { TodoContext } from "./Todo"
 
 
 export const TodoDetail = () => {
@@ -27,7 +27,7 @@ export const TodoDetail = () => {
         if(taskVal=="" || taskVal==task_text){
             console.log("Empty new task value")
         }else{
-            await axios.put(`http://localhost:4001/editTask/${todo.id}`,
+            await axios.put(`http://localhost:4001/editTask?id=${todo.id}`,
             {
                 task_text:task_text, 
                 task_new_text: taskVal
@@ -39,7 +39,7 @@ export const TodoDetail = () => {
     //done
     async function editTitle(){
         if(titleVal!="" && titleVal!=todo.title){
-            await axios.put(`http://localhost:4001/editTodoTitle/${todo.id}`,
+            await axios.put(`http://localhost:4001/editTodoTitle?id=${todo.id}`,
             {
                 "title": titleVal
             })
@@ -55,7 +55,7 @@ export const TodoDetail = () => {
             document.getElementById(`button-${id}`).classList.add("cursor-not-allowed")
             document.getElementById(`input-${id}`).classList.add("text-gray-600")
             document.getElementById(`button-${id}`).classList.add("text-gray-600")
-            await axios.put(`http://localhost:4001/deleteTasks/${todo.id}`,
+            await axios.put(`http://localhost:4001/deleteTasks?id=${todo.id}`,
             {
                 "task_text":val
             })
@@ -70,7 +70,7 @@ export const TodoDetail = () => {
 
     async function delTodo(){
         try {
-            await axios.delete(`http://localhost:4001/deleteTodo/${todo.id}`)
+            await axios.delete(`http://localhost:4001/deleteTodo?id=${todo.id}`)
             .then(() => console.log('Delete successfull'))
             .catch((err) => console.log(err))
         } catch (error) {
@@ -82,7 +82,7 @@ export const TodoDetail = () => {
       let newTask = prompt("Please enter task details");
       if (newTask != null) {
         try {
-            await axios.put(`http://localhost:4001/createTasks/${todo.id}`,{"task":newTask})
+            await axios.put(`http://localhost:4001/createTasks?id=${todo.id}`,{"task":newTask})
             .then(() => console.log('Task Created successfull'))
             .catch((err) => console.log(err))
         } catch (error) {

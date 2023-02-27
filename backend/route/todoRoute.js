@@ -9,12 +9,12 @@ router.use('/getTodos', auth)
 router.get("/", home)
 router.post("/createTodo", createTodo)
 router.get("/getTodos", getTodos)
-router.put("/editTodoTitle/:id", editTodoTitle)
-router.delete("/deleteTodo/:id", deleteTodo)
+router.put("/editTodoTitle", editTodoTitle)
+router.delete("/deleteTodo", deleteTodo)
 
 //Tasks - CRUD
-router.put("/createTasks/:id", createTasks)
-router.put("/deleteTasks/:id", deleteTasks)
-router.put("/editTask/:id", editTask)
+router.put("/createTasks", createTasks)
+router.put("/deleteTasks", deleteTasks)
+router.put("/editTask", editTask)
 
 module.exports = router

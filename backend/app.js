@@ -13,7 +13,13 @@ const todoRouter = require("./route/todoRoute")
 const userRouter = require("./route/userRoute")
 const cors = require('cors')
 
-app.use(cors())
+let corsOptions = {
+    origin: 'http://localhost:3000',
+    optionsSuccessStatus: 200,
+    credentials:true
+}
+
+app.use(cors(corsOptions))
 app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))

@@ -89,8 +89,7 @@ exports.dashboard = async (req, res) => {
     //auth.js is the middleware to verify token
 
     // extract id from token and query the db
-    
-    res.send(`Welcome to dashboard ${req.decodedUser}`)
+    res.send(`Welcome to dashboard ${req.cookies.userId}`)
 }
 
 exports.profile = async (req, res) => {
@@ -98,7 +97,7 @@ exports.profile = async (req, res) => {
     //access to req.user = id, email
 
     //based on id, query to db and get all info of user - findOne({id})
-    const id = req.decodedUser
+    const id = req.cookies.userId
     const verifiedUser = await User.findOne({_id:id})
     verifiedUser.password = undefined
     console.log(verifiedUser)

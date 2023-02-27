@@ -1,24 +1,31 @@
 import React, {useState, useEffect, useContext} from 'react'
 import axios from 'axios'
 import SideElement from './SideElement'
-import { TodoContext } from '../App';
+import { TodoContext } from './Todo';
 import { useCookies } from 'react-cookie';
 
 
 export const Sidebar = () => {
 
+    const [cookies, setCookie] = useCookies();
+
     const [todoList, setTodoList] = useState(null)
     const {setTodoValue} = useContext(TodoContext);
-    // const [cookies, setCookie] = useCookies(['name']);
 
     let bool = true
 
     const fetchTodoData = async () => {
-        const resp = await axios.get("/getTodos")
 
+        const resp = await axios
+        .get("http://localhost:4001/getTodos",{ withCredentials: true })
+        
         if(resp.data.todos.length > 0){
             setTodoList(resp.data.todos)
         }
+        const t = resp.data.todos[0]
+        setTodoValue({id: t._id, 
+            title: t.title, 
+            tasks: t.tasks})
     }
 
     async function createTodo() {
@@ -43,7 +50,7 @@ export const Sidebar = () => {
     //run every time todoList changes
     useEffect(() => {
       fetchTodoData();
-    }, [todoList])
+    }, [])
 
     return(
         <aside className="w-1/3 p-6 bg-gray-900 text-gray-100">

@@ -37,9 +37,8 @@ exports.createTodo = async (req, res) => {
 
 exports.getTodos = async (req, res) => {
     try {
-        const userId = req.decodedUser
+        const userId = req.cookies.userId
         const todos = await Todo.find({userId})
-        console.log(todos)
         res.status(200).json({
             success: true,
             todos,
@@ -61,13 +60,17 @@ exports.getTodos = async (req, res) => {
 exports.editTodoTitle = async (req, res) => {
     try {
         const {title} = req.body
-        const todo = await Todo.findByIdAndUpdate(req.params.id,
+        const todo = await Todo.findByIdAndUpdate(req.query.id,
             {
-                $set: {
                 "title": title
-                }
             }
-        );
+        ).catch ((error) => {
+            console.log(error);
+            res.status(401).json({
+                success: false,
+                message: error.message,
+            })
+        });
         res.status(200).json({
             success: true,
             message: "Todo updated successfully",
@@ -83,7 +86,7 @@ exports.editTodoTitle = async (req, res) => {
 
 exports.deleteTodo = async (req, res) => {
     try {
-        const todo = await Todo.findByIdAndDelete(req.params.id);
+        const todo = await Todo.findByIdAndDelete(req.query.id);
         res.status(200).json({
             success: true,
             message: "Todo deleted successfully",
@@ -100,7 +103,7 @@ exports.deleteTodo = async (req, res) => {
 exports.createTasks = async (req, res) => {
     try {
         const {task} = req.body
-        const todo = await Todo.findByIdAndUpdate(req.params.id, {$push: {tasks: task}})
+        const todo = await Todo.findByIdAndUpdate(req.query.id, {$push: {tasks: task}})
         res.status(200).json({
             success: true,
             message: "Task added successfully",
@@ -119,7 +122,7 @@ exports.editTask = async (req, res) => {
     try {
         const {task_text, task_new_text} = req.body
         const todo = await Todo.findByIdAndUpdate(
-            req.params.id, {
+            req.query.id, {
                 $set: {
                     "tasks.$[element]": task_new_text
                 }
@@ -143,7 +146,7 @@ exports.deleteTasks = async (req, res) => {
     try {
         const {task_text} = req.body
         const todo = await Todo.findByIdAndUpdate(
-            req.params.id, 
+            req.query.id, 
             {
                 $pull: { tasks : task_text}
             })

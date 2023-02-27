@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { TodoContext } from '../App';
+import { TodoContext } from './Todo';
 
 const SideElement = ({id, title, tasks}) => {
 

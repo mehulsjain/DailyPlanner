@@ -1,6 +1,16 @@
 import React from 'react'
+import {useNavigate} from 'react-router-dom';
 
-const Header = () => {
+const Header = ({user, signUpOption}) => {
+
+	const navigate = useNavigate();
+	const signOutClick = () => {
+		const val = document.getElementById("signOut").textContent
+		if(val=="Log Out"){
+			navigate('/');
+		}
+	}
+
     return(
 		<header className="p-4 bg-gray-800 text-gray-100">
 			<div className="container flex justify-between h-16 mx-auto">
@@ -12,10 +22,10 @@ const Header = () => {
 				</a>
 				<ul className="items-stretch hidden space-x-3 md:flex">
 					<li className="flex">
-						<a rel="noopener noreferrer" href="/#" className="flex items-center px-4 -mb-1  dark:border-transparent">Hello User .. !!</a>
+						<div rel="noopener noreferrer" className="flex items-center px-4 -mb-1  dark:border-transparent">{user}</div>
 					</li>
 					<li className="flex">
-						<a rel="noopener noreferrer" href="/#" className="flex items-center px-4 -mb-1  dark:border-transparent">Sign Out</a>
+						<button type="button" onClick={signOutClick} id="signOut" className="flex br-4 rounded h-7/8 items-center px-4 -mb-1 hover:bg-sky-500 hover:ring-sky-500  dark:border-transparent">{signUpOption}</button>
 					</li>
 				</ul>
 				<button className="flex justify-end p-4 md:hidden">
