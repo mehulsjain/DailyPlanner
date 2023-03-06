@@ -18,7 +18,7 @@ export const Singup = () => {
     }else if(pass!=retypePass){
       alert("Password and retype password not matching")
     }else{
-      await axios.post("http://localhost:4001/register",{
+      await axios.post(`${process.env.BACKEND_URI}/register`,{
         "firstname":  fn,
         "lastname":  ln,
         "email":  email,

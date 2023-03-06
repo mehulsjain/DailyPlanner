@@ -17,7 +17,7 @@ export const Sidebar = () => {
     const fetchTodoData = async () => {
 
         const resp = await axios
-        .get("http://localhost:4001/getTodos",{ withCredentials: true })
+        .get(`${process.env.BACKEND_URI}/getTodos`,{ withCredentials: true })
         
         if(resp.data.todos.length > 0){
             setTodoList(resp.data.todos)
@@ -33,7 +33,7 @@ export const Sidebar = () => {
         let newTodoTask = prompt("Please add task for the new Todo")
         if (newTodoTitle != null && newTodoTask!=null) {
           try {
-              await axios.post(`http://localhost:4001/createTodo`,
+              await axios.post(`${process.env.BACKEND_URI}/createTodo`,
               {
                 "title": newTodoTitle,
                 "tasks": newTodoTask,
