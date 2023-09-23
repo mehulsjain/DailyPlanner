@@ -10,18 +10,27 @@ exports.home = (req, res) => {
 
 exports.createTodo = async (req, res) => {
     try {
-        const {title, tasks, userId} = req.body
+        const {title, tasks} = req.body
+        const userId = req.cookies.userId
         console.log(req.body)
-        if(!title || tasks.length == 0){
-            throw new Error("Title and tasks are required");
+        if(!title){
+
+            throw new Error("Title is required");
+        }else if(tasks.length == 0){
+            throw new Error("Tasks are required");
+        }else if(!userId){
+            throw new Error("userId is required");
         }
+
         const titleExists = await Todo.findOne({title});
-        if(titleExists){
-            console.log("Title already exists");
+
+        if(titleExists && titleExists.userId.toString()===userId){
+            console.log("Title already exists For the user");
+            
             res.status(401).json({
-                error: "title already exists"
-            })
-            process.exit(1)
+                error: "Please enter a unique title"
+            });
+            return;
         }
 
         const todo = await Todo.create({title, tasks, userId});
@@ -37,12 +46,13 @@ exports.createTodo = async (req, res) => {
 
 exports.getTodos = async (req, res) => {
     try {
-        const userId = req.cookies.userId
+        const userId =  req.userIdCookie;
         const todos = await Todo.find({userId})
         res.status(200).json({
             success: true,
-            todos,
+            todos
         });
+        
     } catch (error) {
         console.log(error)
         res.status(401).json({
@@ -65,7 +75,7 @@ exports.editTodoTitle = async (req, res) => {
                 "title": title
             }
         ).catch ((error) => {
-            console.log(error);
+            console.log(error.message);
             res.status(401).json({
                 success: false,
                 message: error.message,
@@ -102,8 +112,8 @@ exports.deleteTodo = async (req, res) => {
 
 exports.createTasks = async (req, res) => {
     try {
-        const {task} = req.body
-        const todo = await Todo.findByIdAndUpdate(req.query.id, {$push: {tasks: task}})
+        const {task_text} = req.body
+        const todo = await Todo.findByIdAndUpdate(req.query.id, {$push: {tasks: task_text}})
         res.status(200).json({
             success: true,
             message: "Task added successfully",

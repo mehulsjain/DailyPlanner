@@ -1,56 +1,48 @@
-import React, {useState, useEffect, useContext} from 'react'
-import axios from 'axios'
 import SideElement from './SideElement'
-import { TodoContext } from './Todo';
-import { useCookies } from 'react-cookie';
 
+import { useCreateTodoMutation } from '../services/todoApi';
+import { useDispatch } from 'react-redux';
+import { updateTodoInfo } from '../services/todoReducer';
+import { useEffect } from 'react';
 
-export const Sidebar = () => {
+export const Sidebar = ({todoList}) => {
 
-    const [cookies, setCookie] = useCookies();
+    const dispatch = useDispatch();
 
-    const [todoList, setTodoList] = useState(null)
-    const {setTodoValue} = useContext(TodoContext);
-
-    let bool = true
-
-    const fetchTodoData = async () => {
-
-        const resp = await axios
-        .get(`${process.env.BACKEND_URI}/getTodos`,{ withCredentials: true })
-        
-        if(resp.data.todos.length > 0){
-            setTodoList(resp.data.todos)
-        }
-        const t = resp.data.todos[0]
-        setTodoValue({id: t._id, 
-            title: t.title, 
-            tasks: t.tasks})
+    let todoOne;
+    const [createTodo,{error}] = useCreateTodoMutation();
+    
+    if(todoList!=undefined){
+        todoOne = todoList[0];
     }
+    useEffect(()=> {
+        if(todoOne!=undefined) {
+            dispatch(updateTodoInfo({ id:todoOne._id, title:todoOne.title, tasks:todoOne.tasks })); 
+        }else{
+            dispatch(updateTodoInfo({id:"",title:"",tasks:[]}));
+        }
+    },[])
 
-    async function createTodo() {
+
+    async function generateTodo() {
+        //Generating prompts to add Todo
         let newTodoTitle = prompt("Please enter new Todo's Title");
-        let newTodoTask = prompt("Please add task for the new Todo")
-        if (newTodoTitle != null && newTodoTask!=null) {
-          try {
-              await axios.post(`${process.env.BACKEND_URI}/createTodo`,
-              {
-                "title": newTodoTitle,
-                "tasks": newTodoTask,
-                "userId": cookies.id
-              })
-              .then(() => alert('Task Created successfull'))
-              .catch((err) => console.log(err))
-          } catch (error) {
-              console.log(error)
+        let newTodoTask = prompt("Please add task for the new Todo");
+
+        if(newTodoTitle == null && newTodoTask ==null){
+            console.log("Title or tasks are missing");
+        }else{
+          try{
+            const todo = { "title": newTodoTitle, "tasks": newTodoTask };
+            await createTodo(todo)
+            .unwrap()
+            .then((payload) => console.log('fulfilled', payload))
+            .catch((error) => alert(error.data.error));
+          }catch (error) {
+            console.log(error);
           }
         }
       }
-
-    //run every time todoList changes
-    useEffect(() => {
-      fetchTodoData();
-    }, [])
 
     return(
         <aside className="w-1/3 p-6 bg-gray-900 text-gray-100">
@@ -58,13 +50,17 @@ export const Sidebar = () => {
                 <div className="space-y-2 h-screen overflow-hidden">
                     <div className='flex justify-between'>
                     <h2 className="text-sm font-semibold tracking-widest uppercase text-gray-400">TO-DO List</h2>
-                    <button onClick={()=>{createTodo()}} className='bg-transparent hover:bg-blue-500 font-semibold hover:text-white py-2 px-4 border border-grey-500 hover:border-transparent rounded'>Create To Do</button>
+                    <button onClick={generateTodo} className='bg-transparent hover:bg-blue-500 font-semibold hover:text-white py-2 px-4 border border-grey-500 hover:border-transparent rounded'>Create To Do</button>
                     </div>
                     {
-                        todoList && todoList.map((user) => {
-                        // console.log(user._id)
+                        todoList && todoList.map((todo) => {
                             return(
-                                <SideElement id={user._id} title={user.title} tasks={user.tasks} />
+                                <SideElement 
+                                    key={todo._id} 
+                                    id={todo._id} 
+                                    title={todo.title} 
+                                    tasks={todo.tasks} 
+                                />
                             ) 
                         })
                     }

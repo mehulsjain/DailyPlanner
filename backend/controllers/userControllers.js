@@ -19,7 +19,8 @@ exports.register = async (req, res) => {
         const existingUser = await User.findOne({email})
 
         if(existingUser) {
-            res.status(401).send("User already registered")
+            res.status(401).send({errorMessage: "User already registered"});
+            return;
         }
 
         // excrypt the password
@@ -43,7 +44,7 @@ exports.register = async (req, res) => {
         user.password = undefined
 
         res.status(201).json(user)
-
+        return;
     } catch (error) {
         console.log(error);
         console.log("Error is response route")
@@ -56,11 +57,19 @@ exports.login = async (req, res) => {
         const {email, password} = req.body
         //validate
         if(!(email && password)){
-            res.status(401).send("Email and password required")
+            res.status(401).send("Email and password required");
+            return;
         }
         // check user in db
         const user = await User.findOne({email})
         // if user not exists
+        if(!user){
+            res.status(401).json({
+                success: false,
+                message: "Invalid Credentials "
+            })
+            return;
+        }
         //match the password
         if(user && (await bcrypt.compare(password, user.password))){
             const token = jwt.sign({id: user._id}, process.env.JWT_TOKEN, {expiresIn: '2h'})
@@ -76,9 +85,11 @@ exports.login = async (req, res) => {
                 token,
                 user
             })
+            return;
+        }else{
+            res.sendStatus(400).send("email or password is incorrect");
+            return;
         }
-        //create token and send
-        res.sendStatus(400).send("email or password is incorrect")
     } catch (error) {
         console.log(error)
     }
@@ -89,6 +100,7 @@ exports.dashboard = async (req, res) => {
     //auth.js is the middleware to verify token
 
     // extract id from token and query the db
+    console.log(`Welcome to dashboard ${req.cookies.userId}`)
     res.send(`Welcome to dashboard ${req.cookies.userId}`)
 }
 
@@ -100,7 +112,7 @@ exports.profile = async (req, res) => {
     const id = req.cookies.userId
     const verifiedUser = await User.findOne({_id:id})
     verifiedUser.password = undefined
-    console.log(verifiedUser)
+    console.log(`Welcome to dashboard ${req.cookies.userId}`)
     //send a json response with all data
-    res.send(verifiedUser)
+    res.send(`Welcome to dashboard ${req.cookies.userId}`)
 }

@@ -13,8 +13,8 @@ router.put("/editTodoTitle", editTodoTitle)
 router.delete("/deleteTodo", deleteTodo)
 
 //Tasks - CRUD
-router.put("/createTasks", createTasks)
-router.put("/deleteTasks", deleteTasks)
+router.put("/createTask", createTasks)
+router.put("/deleteTask", deleteTasks)
 router.put("/editTask", editTask)
 
 module.exports = router

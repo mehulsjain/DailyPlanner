@@ -3,8 +3,7 @@ const mongoose = require("mongoose");
 const TodoSchema = new mongoose.Schema({
     title: {
         type: String,
-        require: [true, "Title is required"],
-        unique: true
+        require: [true, "Title is required"]
     },
     tasks: {
         type: [String],
@@ -12,6 +11,7 @@ const TodoSchema = new mongoose.Schema({
     },
     userId:{
         type: mongoose.Schema.Types.ObjectId,
+        require: [true, "UserId is required"],
         ref:"user"
     }
 },

@@ -1,34 +1,23 @@
-import React, { useState} from 'react'
+import { useTodoQuery } from '../services/todoApi';
 import Header from './Header';
 import Sidebar from './Siebar';
-import TodoDetail from './TodoDetail';
-
-export const TodoContext = React.createContext({
-  id: "",
-  title: "",
-  tasks: [""]
-}) 
+import TodoDetail from './TodoDetail'
 
 const Todo = () => {
+  
+  const val = useTodoQuery();
 
-  const [todoValue, setTodoValue] = useState({
-    id:"",
-    title:"",
-    tasks:[""]
-  });
-  const value = { todoValue, setTodoValue };
-
-  return (
-    <TodoContext.Provider value={value}>
-      <Header user="Hey there ..!!" signUpOption="Log Out"/>
+  if(val.status=="fulfilled"){
+    let todoList = val.data.todos;
+    return (
       <div className='flex flex-row w-full'>
-        
-          <Sidebar />
-          <TodoDetail />
-        
+        <Sidebar todoList={todoList} />
+        <TodoDetail />
       </div>
-    </TodoContext.Provider>
-  );
-};
+    )
+  }else{
+    return(null);
+  }
+}
 
 export default Todo;

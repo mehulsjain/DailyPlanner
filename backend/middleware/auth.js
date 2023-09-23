@@ -2,7 +2,10 @@ const jwt = require("jsonwebtoken")
 
 const auth = async (req, res, next) => {
     // console.log(req.cookies)
-    const token = req.cookies.token
+    const token = req.cookies.token;
+    console.log(req.cookies.userId);
+    console.log(token);
+
     //Authorization: "Bearer longtokenvalue"
     //const token = req.header("Authorization").replace("Bearer ", "")
 
@@ -14,16 +17,13 @@ const auth = async (req, res, next) => {
     // verify token
     try {
         const decode = await jwt.verify(token, process.env.JWT_TOKEN)
-        // console.log(decode.id)
         const options = {
-            expires: new Date(Date.now() + 3*24*60*60*1000),
-            httpOnly: true
+            expires: new Date(Date.now() + 3*24*60*60*1000)
         }
-        res.cookie("userId", decode.id, options)
+        req.userIdCookie = decode.id;
     } catch (error) {
-        res.status(403).send('token is invalid')
+        res.status(403).send(error)
     }
-
     return next()
 }
 
