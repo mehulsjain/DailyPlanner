@@ -19,7 +19,7 @@ export const Singin = () => {
     if(email=="" && password==""){
       alert("Email Id and password are required")
     }else{
-      await axios.post(`http://localhost:4001/login/`,
+      await axios.post(`${process.env.REACT_APP_BACKEND_URI}/login/`,
       {
           email,
           password

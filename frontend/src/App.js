@@ -1,4 +1,3 @@
-import './App.css';
 import Singup from './components/Singup';
 import { CookiesProvider } from 'react-cookie';
 import {Route, Routes} from 'react-router-dom';
