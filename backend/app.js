@@ -14,7 +14,7 @@ const userRouter = require("./route/userRoute")
 const cors = require('cors')
 
 let corsOptions = {
-    origin: 'http://localhost:3000',
+    origin: `${process.env.CORS_URL}`,
     optionsSuccessStatus: 200,
     credentials:true
 }
